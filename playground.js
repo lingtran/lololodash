@@ -1,23 +1,35 @@
 var _ = require("lodash");
 
-var totalOrdersPerArticle = function(arr){
-  var aggregator = [];
-  var articles = _.groupBy(arr, "article");
+var arr = [ { name: "mike",  income: 2563 },
+  { name: "kim",   income: 1587 },
+  { name: "liz",   income: 3541 },
+  { name: "tom",   income: 2475 },
+  { name: "bello", income: 987  },
+  { name: "frank", income: 2975 } ];
 
-  _.forEach(articles, function(item, key){
-    var keyAsInt = parseInt(key);
-    var total = _.reduce(item, function(sum, item){
-      return sum + item.quantity;
-    }, 0);
+var analysis = function(arr){
+  var result = {
+    "average": 0,
+  };
 
-    aggregator.push({
-      article: keyAsInt,
-      total_orders: total
-    })
+  var totalIncome = _.reduce(arr, function(sum, item){
+    return sum + item.income;
+  }, 0);
+
+  result.average = totalIncome/(arr.length);
+
+  arr = _.sortBy(arr, "income");
+
+  result.underperform = _.filter(arr, function(item){
+    return item.income <= result.average;
   })
 
-  _.sortBy(aggregator, "total_orders");
-  return aggregator.reverse();
+  result.overperform = _.filter(arr, function(item){
+    return item.income > result.average;
+  })
+
+  return result;
+
 }
 
-module.exports = totalOrdersPerArticle;
+module.exports = analysis;
